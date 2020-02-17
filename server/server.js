@@ -1,46 +1,35 @@
 require('./config/config');
+
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const bodyParser = require('body-parser');
-
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
  
 // parse application/json
 app.use(bodyParser.json());
 
-app.get('/', (req , res)=>{
-    res.json('Servidor creado')
-});
-app.get('/usuario',(req,res)=>{
-    res.json('get user')
-});
+app.use(require('./routes/user'))
 
-app.post('/usuario',(req,res)=>{
+mongoose.connect('mongodb://localhost:27017/coffee',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.catch(err => console.error(err))
 
-    let body = req.body
-    if(body.nombre===undefined){
-        res.status(400).json({
-            ok: false,
-            mensaje: "El nombre es necesario"
-        })
-    }else{
-        res.json({
-            persona: body
-        })
-    }
+mongoose.connection.once('open', _=>{
+    console.log('Base de datos conectada');
 })
 
-app.put('/usuario/:id',(req,res)=>{
-    let id = req.params.id;
-    res.json({
-        id
-    })
-});
-
-app.delete('/usuario',(req,res)=>{
-    res.json('delete user')
+mongoose.connection.on('error', err=>{
+    console.log(err);
 })
+
+// await mongoose.connect('mongodb://localhost/my_database', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// });
 
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor corriendo en el puerto', process.env.PORT)
