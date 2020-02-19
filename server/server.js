@@ -12,8 +12,9 @@ app.use(bodyParser.json());
 
 app.use(require('./routes/user'))
 
-mongoose.connect('mongodb://localhost:27017/coffee',{
+mongoose.connect(process.env.URLDB,{
     useNewUrlParser: true,
+    useCreateIndex:true,
     useUnifiedTopology: true
 })
 .catch(err => console.error(err))
