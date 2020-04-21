@@ -9,7 +9,7 @@ const { verifyToken, verifyAdmin } = require('../controllers/authentication');
 app.get('/', (req , res)=>{
     res.json('Servidor creado')
 });
-app.get('/usuario', (req,res) => {
+app.get('/usuario', verifyToken, (req,res) => {
     let since = req.query.since || 5;
     since = Number(since);
     let until = req.query.until || 5;
