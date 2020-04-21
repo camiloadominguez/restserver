@@ -2,13 +2,14 @@ const express = require('express');
 const User = require('../models/user')
 const app = express();
 const bcrypt = require('bcrypt');
-const _ =require('underscore');
+const _ = require('underscore');
+
+const { verifyToken, verifyAdmin } = require('../controllers/authentication');
 
 app.get('/', (req , res)=>{
     res.json('Servidor creado')
 });
-app.get('/usuario',(req,res) => {
-
+app.get('/usuario', verifyToken, (req,res) => {
     let since = req.query.since || 5;
     since = Number(since);
     let until = req.query.until || 5;
@@ -30,7 +31,7 @@ app.get('/usuario',(req,res) => {
         })
     }) 
 });
-app.post('/usuario',(req,res) => {
+app.post('/usuario', [verifyToken, verifyAdmin],(req,res) => {
 
     let body = req.body
     let user = new User({
@@ -63,7 +64,7 @@ app.post('/usuario',(req,res) => {
     //     })
     // }
 })
-app.put('/usuario/:id',(req,res)=>{
+app.put('/usuario/:id', [verifyToken, verifyAdmin],(req,res)=>{
     let id = req.params.id;
     let body = _.pick(req.body,['name','email','password','img','role','state']);
     User.findByIdAndUpdate(id, body,{new:true, runValidators:true},(err,userDB) => {
@@ -80,7 +81,7 @@ app.put('/usuario/:id',(req,res)=>{
     });
     
 });
-app.delete('/usuario/:id',(req,res)=>{
+app.delete('/usuario/:id', [verifyToken,verifyAdmin],(req,res)=>{
     let id = req.params.id;
     User.findByIdAndUpdate(id, { state:false }, {new:true}, (err, delUser)=>{
         
