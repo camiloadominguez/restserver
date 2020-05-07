@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('../config/config');
 
-const verifyToken = (req, res, next) => {//el next continua con la ejecucion del prorama
+const verifyToken = (req, res, next) => {//el next continua con la ejecucion del programa
     let token = req.get('Authorization');
     
     jwt.verify(token,process.env.SECRETWORD,(err,decoded)=>{
