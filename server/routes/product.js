@@ -1,4 +1,5 @@
 const express = require('express');
+const _ = require('underscore');
 
 const Product = require('../models/product');
 
@@ -134,7 +135,10 @@ app.post('/producto', verifyToken , (req, res)=>{
 
 app.put('/producto/:id', verifyToken, (req,res)=>{
     let id = req.params.id;
-    Product.findByIdAndUpdate(id,{precioUni:req.body.precio},{new:true,runValidators:true},(err,updateProduct)=>{
+    let putProduct = _.pick(req.body,["name","precioUni","descripcion","disponible","categoria"]);
+    console.log(putProduct);
+    // let {name, precio, descripcion, disponible, categoria} = req.body;
+    Product.findByIdAndUpdate(id,putProduct,{new:true},(err,updateProduct)=>{
         if(err){
             return res.status(500).json({
                 ok:true,
