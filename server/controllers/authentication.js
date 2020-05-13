@@ -31,7 +31,24 @@ const verifyAdmin = (req, res, next) => {
     }
 }
 
+const verifyTokenImg = (req, res, next) => {
+    let token = req.query.token;
+    jwt.verify(token,process.env.SECRETWORD,(err,decoded)=>{
+        if(err){
+            return res.status(401).json({
+                ok:false,
+                err:{
+                    message:"you must provide a token"
+                }
+            })
+        }
+        req.user = decoded.user;
+        next();
+    })
+}
+
 module.exports = {
     verifyToken,
-    verifyAdmin
+    verifyAdmin,
+    verifyTokenImg
 }

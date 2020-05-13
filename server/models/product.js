@@ -9,6 +9,7 @@ const productSchema = new Schema({
         required:[true, 'El precio unitario es requerido']
     },
     descripcion:String,
+    img:String,
     disponible:{
         type:Boolean,
         required:true,
